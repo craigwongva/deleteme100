@@ -1,0 +1,35 @@
+# Oh no, I need to rollback.
+
+# Someday these will be input parameters:
+export LONGTERM_GIT_REPO=deleteme100
+export LONGTERM_GIT_BRANCH=master
+export TEMP_GIT_BRANCH=tempgitbranch
+export TEMP_GIT_REMOTE=tempgitremote
+export TEMP_LINUX_DIR=templinuxdir
+export ROLLBACK_MON_DD_YYYY_HH_MM="Jun 23 2018 16:55"
+
+git checkout `git rev-list -1 --before="$ROLLBACK_MON_DD_YYYY_HH_MM" $LONGTERM_GIT_BRANCH`
+git checkout -b $TEMP_GIT_BRANCH
+git add *
+git remote add $TEMP_GIT_REMOTE https://github.com/craigwongva/$LONGTERM_GIT_REPO
+git push --set-upstream $TEMP_GIT_REMOTE $TEMP_GIT_BRANCH
+
+# Use an external dir because...
+# The earlier “git rev-list” caused a detached HEAD, but it still retains
+# lineage to master, so a “git merge” will say “Already up-to-date”.
+cd ~
+git clone -b $TEMP_GIT_BRANCH https://github.com/craigwongva/$LONGTERM_GIT_REPO $TEMP_LINUX_DIR
+cd $TEMP_LINUX_DIR
+git checkout $LONGTERM_GIT_BRANCH
+cd $LONGTERM_GIT_REPO
+rm -rf *
+cd ~
+cp -r $TEMP_LINUX_DIR/* $LONGTERM_GIT_REPO/
+cd $LONGTERM_GIT_REPO
+git add *
+git commit -m "Revert to $ROLLBACK_MON_DD_YYYY_HH_MM"
+git push
+
+# Cleanup
+git branch -d $TEMP_GIT_BRANCH
+git push origin --delete $TEMP_GIT_BRANCH
