@@ -4,7 +4,7 @@
 
 # Someday these will be input parameters:
 export GITHUBUSER=craigwongva #$1
-export GITHUBPASSWORD=dd8ed1c9ceac36d0cc54f6659793d9209e1d711c #$2
+export GITHUBPASSWORD=REDACTED #$2
 export LONGTERM_GIT_REPO=deleteme100 #$3
 export LONGTERM_GIT_BRANCH=master #4
 export ROLLBACK_MON_DD_YYYY_HH_MM="July  4 2018 10:00" #$5
